@@ -1,0 +1,441 @@
+admin
+
+package proj;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.awt.event.ActionEvent;
+
+public class admin extends JFrame {
+
+    private JPanel contentPane;
+    private JTextField cityField;
+    private JTextField addressField;
+    private JTextField chargerTypeField;
+    private JTextField rateField;
+    private JTextField plugsField;
+    private JTextField statusField;
+    
+    private static JTable table;
+    DefaultTableModel model;
+
+    // Database connection parameters
+    static final String DB_URL = "jdbc:mysql://localhost/mini_project";
+    static final String USER = "root";
+    static final String PASS = "Omsairam#12";
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    admin frame = new admin();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the frame.
+     */
+    public admin() {
+    	
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 25, 1300, 800);
+        contentPane = new JPanel();
+        contentPane.setBackground(new Color(0, 128, 128));
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+        contentPane.setBackground(new Color(0, 128, 128));
+
+        // Labels and text fields for product details
+        // (you can modify them for charging stations)
+        JLabel lblNewLabel = new JLabel("Admin Operations ");
+        lblNewLabel.setFont(new Font("Rockwell Condensed", Font.PLAIN, 70));
+        lblNewLabel.setBounds(357, 10, 702, 90);
+        lblNewLabel.setForeground(Color.WHITE);
+        contentPane.add(lblNewLabel);
+
+        // Labels and text fields for charging station details
+        JLabel lblNewLabel_1 = new JLabel("Station ID");
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblNewLabel_1.setBounds(35, 125, 108, 37);
+        //contentPane.add(lblNewLabel_1);
+//        pid = new JTextField();
+//        pid.setFont(new Font("Tahoma", Font.PLAIN, 16));
+//        pid.setBounds(188, 128, 198, 37);
+//        contentPane.add(pid);
+//        pid.setColumns(10);
+        
+     // Label and text field for City
+        JLabel lblCity = new JLabel("City");
+        lblCity.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblCity.setBounds(35, 125, 108, 37);
+        lblCity.setForeground(Color.WHITE);
+        contentPane.add(lblCity);
+        cityField = new JTextField();
+        cityField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        cityField.setBounds(188, 128, 198, 37);
+        contentPane.add(cityField);
+        cityField.setColumns(10);
+
+        // Label and text field for Address
+        JLabel lblAddress = new JLabel("Address");
+        lblAddress.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblAddress.setBounds(35, 175, 108, 37);
+        lblAddress.setForeground(Color.WHITE);
+        contentPane.add(lblAddress);
+        addressField = new JTextField();
+        addressField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        addressField.setBounds(188, 178, 198, 37);
+        contentPane.add(addressField);
+        addressField.setColumns(10);
+
+        // Label and text field for Charger Type
+        JLabel lblChargerType = new JLabel("Charger Type");
+        lblChargerType.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblChargerType.setBounds(35, 225, 140, 37);
+        lblChargerType.setForeground(Color.WHITE);
+        contentPane.add(lblChargerType);
+         chargerTypeField = new JTextField();
+        chargerTypeField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        chargerTypeField.setBounds(188, 228, 198, 37);
+        contentPane.add(chargerTypeField);
+        chargerTypeField.setColumns(10);
+
+        // Label and text field for Rate per Unit
+        JLabel lblRatePerUnit = new JLabel("Rate per Unit");
+        lblRatePerUnit.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblRatePerUnit.setBounds(35, 275, 140, 37);
+        lblRatePerUnit.setForeground(Color.WHITE);
+        contentPane.add(lblRatePerUnit);
+         rateField = new JTextField();
+        rateField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        rateField.setBounds(188, 278, 198, 37);
+        contentPane.add(rateField);
+        rateField.setColumns(10);
+
+
+        // Label and text field for Status
+        JLabel lblStatus = new JLabel("Status");
+        lblStatus.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblStatus.setBounds(35, 325, 140, 37);
+        lblStatus.setForeground(Color.WHITE);
+        contentPane.add(lblStatus);
+        statusField = new JTextField();
+        statusField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        statusField.setBounds(188, 328, 198, 37);
+        contentPane.add(statusField);
+        statusField.setColumns(10);
+
+        // Add more labels and text fields for charging station details as needed
+
+        // Buttons for admin operations
+        JButton btnAdd = new JButton("ADD");
+        btnAdd.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Retrieve data from text fields
+                String city = cityField.getText();
+                String address = addressField.getText();
+                String chargerType = chargerTypeField.getText();
+                String rateString = rateField.getText();
+               // String plugsString = plugsField.getText();
+                String status = statusField.getText();
+
+                // Validate input
+                if (city.isEmpty() || address.isEmpty() || chargerType.isEmpty() || rateString.isEmpty()  || status.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+                    return;
+                }
+
+                // Convert rate to double
+                double ratePerUnit;
+                try {
+                    ratePerUnit = Double.parseDouble(rateString);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid rate per unit.");
+                    return;
+                }
+
+             
+
+                try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+                    // Prepare SQL statement for insertion
+                    String query = "INSERT INTO charging_station (city, address, charger_type, rate_per_unit, status) VALUES (?, ?, ?, ?, ?)";
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1, city);
+                    ps.setString(2, address);
+                    ps.setString(3, chargerType);
+                    ps.setDouble(4, ratePerUnit);
+                   // ps.setInt(5, availablePlugs);
+                    ps.setString(5, status); // Set status value accordingly
+
+                    // Execute the SQL statement
+                    int rowsInserted = ps.executeUpdate();
+                    if (rowsInserted > 0) {
+                        JOptionPane.showMessageDialog(null, "Charging station added successfully.");
+                        // Refresh table data
+                        loadData();
+                        // Clear text fields
+                        clearFields();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Failed to add charging station.");
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+                }
+            }
+        });
+
+
+        btnAdd.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnAdd.setBounds(51, 527, 140, 63);
+        contentPane.add(btnAdd);
+
+        JButton btnUpdate = new JButton("UPDATE");
+        btnUpdate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected row index
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Please select a row to update.");
+                    return;
+                }
+                
+                // Get the station ID from the selected row
+                String stationId = table.getValueAt(selectedRow, 0).toString();
+
+                // Retrieve other data from text fields
+                String city = cityField.getText();
+                String address = addressField.getText();
+                String chargerType = chargerTypeField.getText();
+                String rateString = rateField.getText();
+               // String plugsString = plugsField.getText();
+                String status = statusField.getText();
+                
+                // Validate input (you can add more validation as needed)
+                if (city.isEmpty() || address.isEmpty() || chargerType.isEmpty() || rateString.isEmpty() || status.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+                    return;
+                }
+                double ratePerUnit;
+                try {
+                    ratePerUnit = Double.parseDouble(rateString);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid rate per unit.");
+                    return;
+                }
+
+
+                try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+                    // Prepare SQL statement for update
+                    String query = "UPDATE charging_station SET city = ?, address = ?, charger_type = ?, rate_per_unit = ?, status = ? WHERE c_id = ?";
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1, city);
+                    ps.setString(2, address);
+                    ps.setString(3, chargerType);
+                    ps.setDouble(4, ratePerUnit);
+                  //  ps.setInt(5, availablePlugs);
+                    ps.setString(5, status);
+                    ps.setString(6, stationId);
+
+                    // Execute the SQL statement
+                    int rowsUpdated = ps.executeUpdate();
+                    if (rowsUpdated > 0) {
+                        JOptionPane.showMessageDialog(null, "Charging station updated successfully.");
+                        // Refresh table data
+                        loadData();
+                        // Clear text fields
+                        clearFields();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No charging station found with ID: " + stationId);
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+                }
+            }
+        });
+
+        btnUpdate.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnUpdate.setBounds(230, 527, 140, 63);
+        contentPane.add(btnUpdate);
+
+        JButton btnDelete = new JButton("DELETE");
+        btnDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected row index
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Please select a row to delete.");
+                } else {
+                    // Get the value of the PId from the selected row
+                    String selectedPId = table.getValueAt(selectedRow, 0).toString();
+                    
+                    // Delete the charging station with the selected PId
+                    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+                        String deleteQuery = "DELETE FROM charging_station WHERE c_id = ?";
+                        PreparedStatement deleteStatement = conn.prepareStatement(deleteQuery);
+                        deleteStatement.setString(1, selectedPId);
+                        int rowsDeleted = deleteStatement.executeUpdate();
+                        if (rowsDeleted > 0) {
+                            JOptionPane.showMessageDialog(null, "Charging station deleted successfully.");
+                            // Reload data after deletion
+                            loadData();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Failed to delete charging station.");
+                        }
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+                    }
+                }
+            }
+        });
+        btnDelete.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnDelete.setBounds(30, 300, 150, 40);
+        contentPane.add(btnDelete);
+
+        btnDelete.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnDelete.setBounds(51, 622, 140, 61);
+        contentPane.add(btnDelete);
+
+
+        JButton btnViewPayments = new JButton("View Payments");
+        btnViewPayments.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Open a new frame or dialog to display payments
+                JFrame paymentFrame = new JFrame("User Payments");
+                JPanel paymentPanel = new JPanel();
+                paymentPanel.setLayout(new BorderLayout());
+                
+                // Create a table to display payments
+                JTable paymentTable = new JTable();
+                DefaultTableModel paymentModel = new DefaultTableModel();
+                paymentModel.setColumnIdentifiers(new Object[]{"User ID", "Amount", "Payment Date","Description"});
+                paymentTable.setModel(paymentModel);
+                
+                // Fetch payments from the database and populate the table
+                try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+                    String query = "SELECT user_id, p_amount,Date,description FROM payments";
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        Object[] rowData = {rs.getInt("user_id"), rs.getDouble("p_amount"), rs.getDate("Date"),rs.getString("description")};
+                        paymentModel.addRow(rowData);
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+                }
+                
+                // Add the table to a scroll pane and add it to the payment panel
+                JScrollPane scrollPane = new JScrollPane(paymentTable);
+                paymentPanel.add(scrollPane, BorderLayout.CENTER);
+                
+                // Add the payment panel to the payment frame and set its properties
+                paymentFrame.add(paymentPanel);
+                paymentFrame.setSize(600, 400);
+                paymentFrame.setLocationRelativeTo(null); // Center the frame on the screen
+                paymentFrame.setVisible(true);
+            }
+        });
+        btnViewPayments.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnViewPayments.setBounds(30, 350, 200, 40);
+        contentPane.add(btnViewPayments);
+
+        btnViewPayments.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnViewPayments.setBounds(677, 645, 200, 56);
+        contentPane.add(btnViewPayments);
+
+        JButton btnBack = new JButton("Back");
+        btnBack.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               
+                dispose(); // Close the current frame
+               
+            }
+        });
+        btnBack.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnBack.setBounds(250, 350, 200, 40);
+        contentPane.add(btnBack);
+
+        btnBack.setForeground(Color.WHITE);
+        btnBack.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnBack.setBackground(Color.GRAY);
+        btnBack.setBounds(900, 645, 150, 56);
+        contentPane.add(btnBack);
+
+        // Table to display charging stations
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(437, 125, 816, 476);
+        contentPane.add(scrollPane);
+
+        table = new JTable();
+        table.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        model = new DefaultTableModel();
+        Object col[] = {"Station ID", "Station Name", "Location", "Availability"};
+        model.setColumnIdentifiers(col);
+        table.setModel(model);
+        scrollPane.setViewportView(table);
+
+        // Load charging station data when the frame is initialized
+        loadData();
+    }
+
+    // Method to load charging station data from the database
+    private void loadData() {
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM charging_station");
+             ResultSet rs = ps.executeQuery()) {
+
+            // Clear existing rows from the table
+            model.setRowCount(0);
+
+            // Add new rows from the result set
+            while (rs.next()) {
+                Object row[] = {
+                        rs.getInt("c_id"),
+                        rs.getString("city"),
+                        rs.getString("address"),
+                        rs.getString("status")
+                };
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void clearFields() {
+      
+        cityField.setText("");
+        addressField.setText("");
+        chargerTypeField.setText("");
+        rateField.setText("");
+        statusField.setText("");
+        
+    }
+}
