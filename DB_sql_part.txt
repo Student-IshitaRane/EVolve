@@ -1,0 +1,483 @@
+the user's table:
+
+create table user(
+user_id int AUTO_INCREMENT Primary key,
+pswd VARCHAR(50) NOT NULL,
+name varchar(50) NOT NULL,
+PhNo bigint NOT NULL,
+Address varchar(60),
+Vehicle int NOT NULL,
+Make varchar(50),
+Model varchar(50),
+Wallet int,
+total_bookings INT DEFAULT 0);
+
+INSERT INTO user (name, pswd, PhNo, Address, Vehicle, Make, Model, Wallet)
+VALUES
+    ("Radha", '#123', '9876543212', "Kothrud, Pune", 6789, "Tata Nexon EV", "XM", "2000"),
+    ("Anushka", '#345', '8766543212', "Viman Nagar, Pune", 8890, "Jaguar I-Pace", "Sportback 55", "8000"),
+    ("Manav", '#567', '9665654322', "Thane, Mumbai", 6711, "Tata Nexon EV", "XZ Plus Dual Tone", "2500"),
+    ("Aditya", '#789', '9843543212', "Ideal colony, Nashik", 9989, "Tata Tigor EV", "XE", "6000"),
+    ("Milind", '#456', '9892323212', "Narendra Nagar, Nagpur", 5453, "Tata Nexon EV", "Dark XZ Plus LUX", "7000");
+
+
+
+the admin's table:
+
+create table admin(
+admin_id int AUTO_INCREMENT Primary Key,
+pswd VARCHAR(50) NOT NULL,
+name varchar(30),
+PhNo varchar(10) NOT NULL,
+Wallet int);
+
+insert into admin (pswd, name, PhNo, Wallet) values
+("#123","admin", "8787656543", 10000);
+
+
+table for available slots at an EV-station:
+
+CREATE TABLE slots (
+    slot_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    c_id INT,
+    s_date DATE,
+    s_start_time TIME,
+    s_end_time TIME DEFAULT '00:00:00',
+    status VARCHAR(20) DEFAULT 'Available',
+FOREIGN KEY (c_id) REFERENCES charging_station(c_id);
+);
+
+
+
+table for payments:
+
+CREATE TABLE payments (
+    p_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    admin_id INT,
+    p_amount INT DEFAULT 0,
+    Date DATETIME,
+    description varchar(20),
+    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (admin_id) REFERENCES admin(admin_id)
+);
+
+
+table for charging stations:
+
+create table charging_station(
+c_id int AUTO_INCREMENT Primary key,
+city varchar(20),
+address varchar(80),
+charger_type varchar(30),
+rate_per_unit int,
+status varchar(20));
+
+
+
+INSERT INTO charging_station(city, address, charger_type, rate_per_unit, status) VALUES
+("Pune", "Synergy Solutions, Narayan Peth,Pune", "TYPE-2", 24, "Available"),
+("Pune", "office 9. Modak Prasad ,Oppo Rastrabhasha Bhavan", "TYPE_2", 23, "Available"),
+("Pune", "Shreenath Society, Veerbhadra Nagar, Baner, Pune, Maharashtra 411045", "TYPE_2", 25, "Available"),
+("Pune", "Karve Nagar,Pune", "TYPE_2", 24, "Available"),
+("Mumbai", "14, JP Rd, Aram Nagar, Seven Bunglow, Andheri West", "TYPE_2", 24, "Available"),
+("Mumbai", "10, Rope Walk Ln, Kala Ghoda", "TYPE_2", 23, "Available"),
+("Mumbai", "Kohinoor Square, Kasaravadi, Dadar", "TYPE_2", 25, "Available"),
+("Mumbai", "GD Ambekar Marg, Lal Baug, Parel", "TYPE_2", 23, "Available"),
+("Mumbai", "opp. Domestic Airport, Navpada, Vile Parle East", "TYPE_2", 25, "Available"),
+("Nagpur", "Beside Batukbhai Jewellers, West High Court Road, Dharampeth", "TYPE_2", 24, "Available"),
+("Nagpur", "Jaika Motors Pvt Ltd.,Civil Line", "TYPE_2", 24, "Available"),
+("Nagpur", "205, Sakkardara Police Chowki Rd, Anand Nagar", "TYPE_2", 25, "Available"),
+("Nagpur", "NH 07, Plot no-X-273, Near Rajnayan Petrol Pump, Buttibori", "TYPE_2", 24, "Available"),
+("Nashik", "Vrundavan Garden,Nashik Dindori Road", "TYPE_2", 25, "Available"),
+("Nashik", "Sarode Motors, nearby Balbharati, Lekha Nagar", "TYPE_2", 24, "Available"),
+("Nashik", "Gangapur Rd, Viveka Nand Nagar", "TYPE_2", 25, "Available"),
+("Nashik", "18/08, Rajratna Nagar, Pawan Nagar", "TYPE_2", 25, "Available"),
+("Kolhapur", "C.S. No. 195K/2K, Kavala Naka, E-Ward", "TYPE_2", 24, "Available"),
+("Kolhapur", " Chandrameela Building, Near Krishna temple, Mohite park", "TYPE_2", 25, "Available"),
+("Kolhapur", "Plot No 1/K1, next to Klin Fuel Technology, Sarnobatwadi", "TYPE_2", 24, "Available");
+
+
+
+table for managing bookings:
+
+CREATE TABLE bookings (
+    b_id INT AUTO_INCREMENT PRIMARY KEY,
+    c_id INT,
+    slot_id INT,
+    user_id INT,
+    units INT,
+    status VARCHAR(20) DEFAULT 'Booked', 
+    cost INT DEFAULT 0,
+    FOREIGN KEY (c_id) REFERENCES charging_station(c_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (slot_id) REFERENCES slots(slot_id)
+);
+
+
+
+table for manager of each EV station:
+
+CREATE TABLE manager (
+    
+    c_id INT PRIMARY KEY,
+    admin_id INT,
+    FOREIGN KEY (c_id) REFERENCES charging_station (c_id),
+    FOREIGN KEY (admin_id) REFERENCES admin (admin_id)
+);
+
+
+
+
+insert into manager(c_id,admin_id) values
+(1,1),
+(2,1),
+(3,1),
+(4,1),
+(5,1),
+(6,1),
+(7,1),
+(8,1),
+(9,1),
+(10,1),
+(11,1),
+(12,1),
+(13,1),
+(14,1),
+(15,1),
+(16,1),
+(17,1),
+(18,1),
+(19,1),
+(20,1);
+
+
+
+table for previous bookings:
+
+CREATE TABLE prev_records(
+rec_id INT AUTO_INCREMENT PRIMARY KEY,
+user_id INT NOT NULL,
+c_id INT NOT NULL,
+date DATE NOT NULL,
+start_time TIME NOT NULL,
+end_time TIME NOT NULL,
+units INT,
+cost INT,
+FOREIGN KEY (c_id) REFERENCES charging_station (c_id),
+FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+
+
+help desk table:
+
+
+CREATE TABLE help_desk( units int, time_required varchar(30));                                                                                                                                                                 INSERT INTO help_desk VALUES (5,"15 mins"),(10,"30 mins"),(15,"45 mins"),(20,"60 mins");
+
+
+
+Procedures, triggers and Events:
+
+
+1.cursor for entering time slots:
+
+DELIMITER //
+CREATE PROCEDURE fill_slot_table()
+BEGIN
+DECLARE station_id INT;
+DECLARE i INT DEFAULT 0;
+DECLARE start_time TIME;
+DECLARE date DATE;
+DECLARE finished INT DEFAULT 0;
+DECLARE end_time TIME;
+DECLARE station_cursor CURSOR FOR 
+SELECT c_id FROM charging_station;
+DECLARE CONTINUE HANDLER
+FOR NOT FOUND SET finished = 1;
+OPEN station_cursor;
+station_loop: LOOP
+FETCH station_cursor INTO station_id;
+IF finished=1 THEN
+LEAVE station_loop;
+END IF;
+SET date=CURDATE();
+SET start_time ='08:00:00';
+WHILE i < 10 DO
+SET i = i + 1;
+SET end_time = ADDTIME(start_time, '01:00:00');
+INSERT INTO slots (c_id, s_date, s_start_time, s_end_time, status)
+VALUES (station_id, date, start_time, end_time, 'Available');
+SET start_time = end_time;
+END WHILE;
+SET i = 0;
+END LOOP;
+CLOSE station_cursor;
+end
+//
+
+DELIMITER ;
+
+call fill_slot_table();
+
+
+2.trigger to deduct the cost from user's wallet and add it to admin's wallet and   add all the bookings to the prev_records table to store the booking history
+
+DELIMITER //
+CREATE TRIGGER after_book
+BEFORE INSERT ON bookings
+FOR EACH ROW
+BEGIN
+    DECLARE ad INT;
+    DECLARE rpu INT;
+    DECLARE user_balance INT;
+    DECLARE prev_date DATE;
+    DECLARE prev_start_time TIME;
+    DECLARE prev_end_time TIME;
+
+    SELECT admin_id INTO ad FROM manager WHERE c_id = NEW.c_id;
+    SELECT rate_per_unit INTO rpu FROM charging_station WHERE c_id = NEW.c_id;
+
+    SET NEW.cost = NEW.units * rpu;
+
+    SELECT Wallet INTO user_balance FROM user WHERE user_id = NEW.user_id;
+
+    IF user_balance < NEW.cost THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Insufficient balance in the user''s wallet';
+    END IF;
+
+    INSERT INTO payments (user_id, admin_id, p_amount, Date, description) VALUES
+    (NEW.user_id, ad, NEW.cost, CURRENT_TIMESTAMP, 'paid by user');
+
+    UPDATE user SET Wallet = Wallet - NEW.cost WHERE user_id = NEW.user_id;
+
+    UPDATE admin SET Wallet = Wallet + NEW.cost WHERE admin_id = ad;
+
+    SELECT s_date, s_start_time, s_end_time INTO prev_date, prev_start_time, prev_end_time
+    FROM slots WHERE slot_id = NEW.slot_id;
+
+    INSERT INTO prev_records (user_id, c_id, date, start_time, end_time, units, cost)
+    VALUES (NEW.user_id, NEW.c_id, prev_date, prev_start_time, prev_end_time, NEW.units, NEW.cost);
+END//
+DELIMITER ;
+
+
+accessing previous records of a person:-----------don't enter this in db
+
+DELIMITER //
+CREATE PROCEDURE get_prev_recs(IN u_id INT)
+BEGIN
+SELECT *FROM prev_records WHERE user_id=u_id;
+END
+//
+DELIMITER ;
+
+
+3.procedure for booking a slot
+
+DELIMITER //
+
+CREATE PROCEDURE book1(
+    IN station_id INT,
+    IN user_id INT,
+    IN s_id INT,
+    IN units INT)
+
+BEGIN
+
+    DECLARE var VARCHAR(20);
+    DECLARE s_time TIME;
+    DECLARE date DATE;
+
+    SET date = CURDATE();
+    SELECT s_start_time INTO s_time FROM slots WHERE slot_id=s_id;
+
+    SELECT status INTO var
+    FROM slots
+    WHERE slot_id=s_id
+    LIMIT 1; 
+
+
+    IF (var = 'Booked' OR s_time < CURTIME()) THEN
+       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'SLOT NOT AVAILABLE';
+
+    ELSE 
+  UPDATE slots SET status='Booked' WHERE slot_id=s_id;
+INSERT INTO bookings (c_id, slot_id, user_id, units, status)
+VALUES (station_id, s_id, user_id, units, 'Booked');
+
+    END IF;
+
+END //
+
+
+Event for daily updation of time slots table.-----------don't enter this in db
+
+DELIMITER //
+
+CREATE EVENT UpdateTimeSlotsAvailability
+ON SCHEDULE EVERY 10 MINUTE
+STARTS CURRENT_TIMESTAMP
+DO
+BEGIN
+
+    UPDATE slots
+    SET status = 'Available';
+
+    UPDATE slots
+    SET s_date=curdate();
+	
+
+END //
+
+DELIMITER ;
+
+
+Event for daily updation of bookings table.-----------don't enter this in db
+
+DELIMITER //
+
+CREATE EVENT ClearBookings
+ON SCHEDULE EVERY 1 DAY
+STARTS CURRENT_DATE + INTERVAL 1 DAY
+DO
+BEGIN
+
+DELETE FROM bookings;
+    
+END //
+
+DELIMITER ;
+
+
+5.procedure to displaying upcoming bookings of a user
+
+DELIMITER //
+
+CREATE PROCEDURE upcoming_bookings(IN u_id INT)
+BEGIN
+    SELECT a.b_id, a.user_id, a.c_id, a.slot_id, b.s_date, b.s_start_time, b.s_end_time 
+    FROM bookings a
+    INNER JOIN slots b ON a.slot_id = b.slot_id
+    WHERE a.user_id = u_id AND b.s_start_time > CURTIME();
+END//
+
+DELIMITER ;
+
+
+procedure for showing previous records:-----------don't enter this in db
+
+DELIMITER //
+CREATE PROCEDURE show_prev_records(IN u_id INT)
+BEGIN
+SELECT *FROM Prev_Records WHERE user_id=u_id;
+END
+//
+
+delimiter ;
+
+6. rewards 
+
+DELIMITER //
+
+CREATE TRIGGER after_booking
+AFTER INSERT ON bookings FOR EACH ROW
+BEGIN
+    DECLARE user_total_bookings INT; 
+DECLARE admin INT;
+DECLARE amount int;
+
+    -- Update total_bookings for the user
+    UPDATE user
+    SET total_bookings = total_bookings + 1
+    WHERE user_id = NEW.user_id;
+    
+    SELECT total_bookings INTO user_total_bookings
+    FROM user
+    WHERE user_id = NEW.user_id;
+
+SELECT admin_id  INTO admin
+    FROM manager
+    WHERE c_id = NEW.c_id;
+    
+    IF user_total_bookings = 5 THEN
+        UPDATE user
+        SET Wallet = Wallet + 50
+        WHERE user_id = NEW.user_id;
+	
+       INSERT INTO payments (user_id, admin_id, p_amount, Date, description) VALUES
+       (NEW.user_id, admin, 50 , CURRENT_TIMESTAMP, "REWARD!");
+
+    ELSEIF user_total_bookings = 15 THEN
+        UPDATE user
+        SET Wallet = Wallet + 70
+        WHERE user_id = NEW.user_id;
+        SELECT Wallet INTO amount
+        FROM user
+        WHERE user_id = NEW.user_id;
+        INSERT INTO payments (user_id, admin_id, p_amount, Date, description) VALUES
+       (NEW.user_id, admin, 70 , CURRENT_TIMESTAMP, "REWARD!");
+    END IF;
+	
+
+END//
+
+7. session over 
+DELIMITER //
+
+CREATE PROCEDURE session_over(
+    IN slot INT,
+    IN user_id INT,
+    IN station INT)
+BEGIN
+    UPDATE bookings SET status = 'Completed' WHERE slot_id = slot;
+    
+END //
+
+DELIMITER ;
+
+8. session cancel
+DELIMITER //
+CREATE PROCEDURE session_cancel(
+    IN slot INT,
+    IN user_id INT,
+    IN station_id INT)
+BEGIN
+    DECLARE amount INT;
+    DECLARE ad INT;
+
+    SELECT cost INTO amount FROM bookings WHERE slot_id = slot;
+    SELECT admin_id INTO ad FROM manager WHERE c_id = station_id;
+
+    SET amount = amount - 25;
+
+    UPDATE bookings SET status = 'Canceled' WHERE slot_id = slot;
+    UPDATE user SET Wallet = Wallet + amount WHERE user_id = user_id;
+    UPDATE user SET total_bookings = (total_bookings - 1) WHERE user_id = user_id;
+    UPDATE admin SET Wallet = Wallet - amount WHERE admin_id = ad;
+
+    INSERT INTO payments (user_id, admin_id, p_amount, Date, description) VALUES
+        (user_id, ad, amount, CURRENT_TIMESTAMP, 'paid back on cancellation');
+     
+END //
+DELIMITER ;
+
+
+
+9. displaying the slots
+
+DELIMITER //
+
+CREATE PROCEDURE display_slots(IN station int)
+BEGIN
+SELECT * from slots where c_id=station AND status = 'Available';
+END//
+DELIMITER ;
+
+
+
+
+
+
+
+
