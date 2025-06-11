@@ -1,0 +1,44 @@
+Login/Signup
+
+package db_proj;
+import java.sql.*;
+import java.util.*;
+
+
+public class JDBC {
+      static String query;
+      static final String DB_URL="jdbc:mysql://localhost:3306/UCE2022564";
+      static final String USER="root";
+      static final String PASS="Omsairam#12";
+      
+      
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Connection conn=null;
+		Statement stmt=null;
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conn=DriverManager.getConnection(DB_URL,USER,PASS);
+			stmt=conn.createStatement();
+			int ch=0;
+			Scanner sc=new Scanner(System.in);
+			do {
+				System.out.println("MENU\n1.INSERT\n2.UPDATE");
+				System.out.println("Enter the option");
+				ch=sc.nextInt();
+				switch(ch) {
+				case 1:
+					//query="INSERT INTO "
+				}
+				
+			}while(ch!=6);
+			
+			
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+
+	}
+
+}
