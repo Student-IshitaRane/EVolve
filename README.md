@@ -14,25 +14,25 @@
 
 ## 👤 User Features
 
-1.Manage charging stations(updation)<br>
-2.Display all charging stations<br>
-3.Add charging station<br>
-4.Remove charging station<br>
-5.See wallet<br>
-6.See transactions<br>
-7.See feedbacks<br>
+1. Manage charging stations(updation)<br>
+2. Display all charging stations<br>
+3. Add charging station<br>
+4. Remove charging station<br>
+5. See wallet<br>
+6. See transactions<br>
+7. See feedbacks<br>
 
 ---
 
 ## 🛡 Admin Features
 
-1.Search for charging stations for a specific city<br>
-2.Book a session<br>
-3.View wallet<br>
-4.View previous bookings<br>
-5.Upcoming sessions – show bookings. Give an option of cancel session/ session over<br>
-6.Feedback<br>
-7.Help desk - units & estimated time AND rewards info show categories and count<br>
+1. Search for charging stations for a specific city<br>
+2. Book a session<br>
+3. View wallet<br>
+4. View previous bookings<br>
+5. Upcoming sessions – show bookings. Give an option of cancel session/ session over<br>
+6. Feedback<br>
+7. Help desk - units & estimated time AND rewards info show categories and count<br>
 
 ---
 
