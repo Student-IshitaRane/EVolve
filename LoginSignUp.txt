@@ -7,7 +7,7 @@ import java.util.*;
 
 public class JDBC {
       static String query;
-      static final String DB_URL="jdbc:mysql://localhost:3306/UCE2022564";
+      static final String DB_URL="jdbc:mysql://localhost:3306/UEC2023251";
       static final String USER="root";
       static final String PASS="Omsairam#12";
       
